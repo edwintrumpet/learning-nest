@@ -1,8 +1,8 @@
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule } from "src/config/config.module";
-import { ConfigService } from "src/config/config.service";
+import { ConfigModule } from "../config/config.module";
+import { ConfigService } from "../config/config.service";
 import { ConnectionOptions } from "typeorm";
-import { Configuration } from "src/config/config.keys";
+import { Configuration } from "../config/config.keys";
 
 export const databaseProviders = [
   TypeOrmModule.forRootAsync({
@@ -10,9 +10,10 @@ export const databaseProviders = [
     inject: [ConfigService],
     async useFactory(config: ConfigService) {
       return {
-        ssl: true,
         type: "postgres" as "postgres",
         host: config.get(Configuration.HOST),
+        database: config.get(Configuration.DATABASE),
+        port: 5432,
         username: config.get(Configuration.USERNAME),
         password: config.get(Configuration.PASSWORD),
         entities: [__dirname + "/../**/*.entity{.ts,.js}"],
